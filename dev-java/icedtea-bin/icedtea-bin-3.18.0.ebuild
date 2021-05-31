@@ -14,15 +14,16 @@ S="${WORKDIR}"
 
 get_apk_names() {
 	ARCH="${2-${1}}"
+	LIBC="${3}"
 	echo "${1}? (
-		${BASE_URI}/${ARCH}/${ALPINE_PN}-${ALPINE_PV}.apk -> ${PF}-${ARCH}.tar.gz
-		${BASE_URI}/${ARCH}/${ALPINE_PN}-jre-${ALPINE_PV}.apk -> ${PF}-jre-${ARCH}.tar.gz
-		${BASE_URI}/${ARCH}/${ALPINE_PN}-jre-base-${ALPINE_PV}.apk -> ${PF}-jre-base-${ARCH}.tar.gz
-		${BASE_URI}/${ARCH}/${ALPINE_PN}-jre-lib-${ALPINE_PV}.apk -> ${PF}-jre-lib-${ARCH}.tar.gz
-		${BASE_URI}/${ARCH}/${ALPINE_PN}-doc-${ALPINE_PV}.apk -> ${PF}-doc-${ARCH}.tar.gz
-		${BASE_URI}/${ARCH}/${ALPINE_PN}-dbg-${ALPINE_PV}.apk -> ${PF}-dbg-${ARCH}.tar.gz
-		examples? ( ${BASE_URI}/${ARCH}/${ALPINE_PN}-demos-${ALPINE_PV}.apk -> ${PF}-demos-${ARCH}.tar.gz )
-		jpeg? ( ${BASE_URI_JPEG}/${ARCH}/${ALPINE_JPEG}.apk -> ${PF}-libjpeg-${ARCH}.tar.gz )
+		${BASE_URI}/${ARCH}/${ALPINE_PN}-${ALPINE_PV}.apk -> ${PF}-${ARCH}-${LIBC}.tar.gz
+		${BASE_URI}/${ARCH}/${ALPINE_PN}-jre-${ALPINE_PV}.apk -> ${PF}-jre-${ARCH}-${LIBC}.tar.gz
+		${BASE_URI}/${ARCH}/${ALPINE_PN}-jre-base-${ALPINE_PV}.apk -> ${PF}-jre-base-${ARCH}-${LIBC}.tar.gz
+		${BASE_URI}/${ARCH}/${ALPINE_PN}-jre-lib-${ALPINE_PV}.apk -> ${PF}-jre-lib-${ARCH}-${LIBC}.tar.gz
+		${BASE_URI}/${ARCH}/${ALPINE_PN}-doc-${ALPINE_PV}.apk -> ${PF}-doc-${ARCH}-${LIBC}.tar.gz
+		${BASE_URI}/${ARCH}/${ALPINE_PN}-dbg-${ALPINE_PV}.apk -> ${PF}-dbg-${ARCH}-${LIBC}.tar.gz
+		examples? ( ${BASE_URI}/${ARCH}/${ALPINE_PN}-demos-${ALPINE_PV}.apk -> ${PF}-demos-${ARCH}-${LIBC}.tar.gz )
+		jpeg? ( ${BASE_URI_JPEG}/${ARCH}/${ALPINE_JPEG}.apk -> ${PF}-libjpeg-${ARCH}-${LIBC}.tar.gz )
 	)"
 }
 
@@ -31,13 +32,15 @@ HOMEPAGE="http://icedtea.classpath.org"
 BASE_URI="http://dl-cdn.alpinelinux.org/alpine/edge/community/"
 BASE_URI_JPEG="http://dl-cdn.alpinelinux.org/alpine/edge/main/"
 SRC_URI="
-	$(get_apk_names amd64 x86_64)
-	$(get_apk_names arm armhf)
-	$(get_apk_names arm armv7)
-	$(get_apk_names arm64 aarch64)
-	$(get_apk_names ppc64 ppc64le)
-	$(get_apk_names s390 s390x)
-	$(get_apk_names x86 x86)
+	elibc_musl? (
+		$(get_apk_names amd64 x86_64 musl)
+		$(get_apk_names arm armhf musl)
+		$(get_apk_names arm armv7 musl)
+		$(get_apk_names arm64 aarch64 musl)
+		$(get_apk_names ppc64 ppc64le musl)
+		$(get_apk_names s390 s390x musl)
+		$(get_apk_names x86 x86 musl)
+	)
 "
 
 LICENSE="GPL-2-with-classpath-exception"
